@@ -1,0 +1,14 @@
+{
+  "name": "life-attitude-booklet",
+  "version": "0.1.0",
+  "private": true,
+  "description": "人生 Attitude 册子：AI 渐进式故事引导 → 态度册子 → 匹配推荐 / 破冰话题 / 长联触达",
+  "scripts": {
+    "setup": "npm install && npm install --prefix server && npm install --prefix client",
+    "seed": "npm --prefix server run seed",
+    "dev": "concurrently -n server,client -c blue,green \"npm --prefix server run dev\" \"npm --prefix client run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}

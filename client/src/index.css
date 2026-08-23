@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    /* 纸质底纹：细微斜纹 + 微弱噪点感 */
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        rgba(43, 38, 34, 0.012) 0px,
+        rgba(43, 38, 34, 0.012) 1px,
+        transparent 1px,
+        transparent 7px
+      );
+  }
+}
+
+@layer components {
+  /* 手帐纸页卡片 */
+  .paper-card {
+    @apply rounded-2xl border border-white/70 bg-white/85 shadow-card ring-1 ring-ink/5;
+  }
+  /* 可交互卡片：按下微缩，hover 抬升见下方媒体查询 */
+  .card-interactive {
+    @apply transition-[transform,box-shadow,background-color] duration-200 active:scale-[0.99];
+  }
+  .btn-primary {
+    @apply inline-flex min-h-[44px] items-center justify-center rounded-xl bg-coral px-5
+      font-medium text-white shadow-sm transition-[transform,box-shadow,background-color]
+      duration-200 hover:bg-coral-deep active:scale-[0.98] disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply inline-flex min-h-[44px] items-center justify-center rounded-xl border border-ink/15
+      bg-white/60 px-5 font-medium text-ink transition-[transform,background-color] duration-200
+      hover:bg-paper-deep active:scale-[0.98] disabled:opacity-50;
+  }
+  .input-field {
+    @apply min-h-[44px] w-full rounded-xl border border-ink/15 bg-white/80 px-4 text-[15px]
+      text-ink placeholder:text-ink-soft/60 outline-none transition-shadow
+      focus:border-coral/60 focus:ring-2 focus:ring-coral/20;
+  }
+  /* 聊天气泡语义样式 */
+  .bubble-self {
+    @apply rounded-2xl rounded-br-md bg-coral text-white shadow-page;
+  }
+  .bubble-other {
+    @apply rounded-2xl rounded-bl-md border border-teal/25 bg-white/90 text-ink shadow-page;
+  }
+}
+
+/* 悬停设备上的抬升反馈（原生 CSS 避免 hover: 变体嵌套问题） */
+@media (hover: hover) {
+  .card-interactive:hover {
+    --tw-shadow: 0 4px 14px rgba(43, 38, 34, 0.1);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    transform: translateY(-2px);
+  }
+  .btn-primary:hover,
+  .btn-ghost:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* 减弱动效偏好：关闭装饰动画与位移过渡 */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float, .animate-rise-in, .animate-fade-in, .animate-dot-bounce { animation: none; }
+  .card-interactive, .btn-primary, .btn-ghost { transition-duration: 0.01ms; }
+}
