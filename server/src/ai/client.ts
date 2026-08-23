@@ -12,7 +12,7 @@ export interface ChatMessage {
   content: string;
 }
 
-const TIMEOUT_MS = 10_000;
+const TIMEOUT_MS = 90_000;
 
 async function requestOnce(messages: ChatMessage[]): Promise<string> {
   const controller = new AbortController();
