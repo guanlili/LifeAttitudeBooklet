@@ -11,12 +11,14 @@ export default function Reconnect() {
   const navigate = useNavigate();
   const [triggers, setTriggers] = useState<ReconnectTrigger[] | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     api
       .get<{ triggers: ReconnectTrigger[] }>('/reconnect')
       .then((res) => setTriggers(res.triggers))
-      .catch((e) => toast(e instanceof Error ? e.message : '加载失败'));
+      .catch((e) => toast(e instanceof Error ? e.message : '加载失败'))
+      .finally(() => setLoading(false));
   }, []);
 
   const send = async (trigger: ReconnectTrigger) => {
@@ -46,21 +48,30 @@ export default function Reconnect() {
 
   return (
     <div className="min-h-dvh pb-8">
-      <header className="sticky top-0 z-20 flex items-center gap-2 bg-paper/95 px-3 py-3 backdrop-blur">
+      <header className="sticky top-0 z-20 flex items-center gap-2 bg-cream/95 px-3 py-3 backdrop-blur">
         <button
-          className="flex h-11 w-11 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-paper-deep"
+          className="flex h-11 w-11 items-center justify-center rounded-full text-ink-3 transition-colors hover:bg-white"
           onClick={() => navigate(-1)}
           aria-label="返回"
         >
           <ChevronLeft size={22} strokeWidth={2.2} />
         </button>
-        <h1 className="font-serif text-base font-semibold">重新连接</h1>
+        <h1 className="text-base font-semibold text-ink">重新连接</h1>
       </header>
 
       <div className="px-5 pt-2">
-        <p className="animate-rise-in text-sm text-ink-soft">
+        <p className="animate-rise-in text-sm text-ink-3">
           这些文案发送前都会经过你的确认，由你来主导每一次联系。
         </p>
+
+        {loading && (
+          <div className="flex flex-col items-center gap-3 py-24">
+            <div className="h-1.5 w-16 overflow-hidden rounded-full bg-border-soft">
+              <div className="h-full w-1/3 animate-[fade-in_1s_ease-in-out_infinite] bg-blue rounded-full" />
+            </div>
+            <p className="text-xs text-ink-4">加载中…</p>
+          </div>
+        )}
 
         {triggers && triggers.length === 0 && (
           <EmptyState icon="☕" title="暂无需要唤起的联系" desc="保持真诚的节奏，缘分不必着急。" />

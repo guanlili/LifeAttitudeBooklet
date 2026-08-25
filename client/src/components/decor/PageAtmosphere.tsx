@@ -1,30 +1,29 @@
 import { useLocation } from 'react-router-dom';
 import PlayfulStar from './PlayfulStar';
 
-type Variant = 'cool' | 'warm' | 'neutral';
+type Variant = 'blue' | 'cream' | 'neutral';
 
 const GRADIENTS: Record<Variant, string> = {
   neutral:
-    'linear-gradient(180deg, rgba(126,163,237,0.16) 0%, rgba(212,227,246,0.10) 32%, rgba(250,246,240,0) 62%, rgba(255,249,233,0.35) 100%)',
-  cool: 'linear-gradient(180deg, rgba(126,163,237,0.30) 0%, rgba(158,189,242,0.22) 22%, rgba(212,227,246,0.14) 45%, rgba(250,246,240,0) 68%, rgba(255,249,233,0.40) 100%)',
-  warm: 'linear-gradient(180deg, rgba(226,237,252,0.28) 0%, rgba(239,245,253,0.16) 20%, rgba(250,248,242,0.06) 48%, rgba(255,249,233,0.45) 100%)',
+    'linear-gradient(180deg, rgba(92,138,240,0.08) 0%, rgba(214,223,238,0.06) 40%, rgba(255,251,237,0) 70%)',
+  blue: 'linear-gradient(180deg, rgba(92,138,240,0.18) 0%, rgba(92,138,240,0.10) 25%, rgba(255,251,237,0) 55%)',
+  cream: 'linear-gradient(180deg, rgba(255,251,237,0) 0%, rgba(255,227,116,0.06) 50%, rgba(255,251,237,0.12) 100%)',
 };
 
 function resolveVariant(pathname: string): Variant {
-  if (pathname === '/' || pathname.startsWith('/discover')) return 'cool';
-  if (pathname.startsWith('/login') || pathname.startsWith('/guide')) return 'warm';
+  if (pathname === '/' || pathname.startsWith('/discover')) return 'blue';
+  if (pathname.startsWith('/login') || pathname.startsWith('/guide')) return 'cream';
   return 'neutral';
 }
 
-/** 全局氛围装饰层：低透明渐变 + 有机曲线 + 漂浮星星，随路由切换冷暖 variant */
+/** 全局氛围装饰层 - 蓝色系渐变 + 简约曲线 + 漂浮星星 */
 export default function PageAtmosphere() {
   const { pathname } = useLocation();
   const variant = resolveVariant(pathname);
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      {/* 三层常驻渐变，按 variant 交叉淡入淡出；低 alpha 让 body 纸纹理透出 */}
-      {(['neutral', 'cool', 'warm'] as const).map((v) => (
+      {(['neutral', 'blue', 'cream'] as const).map((v) => (
         <div
           key={v}
           className={`absolute inset-0 transition-opacity duration-500 ease-out ${
@@ -33,7 +32,7 @@ export default function PageAtmosphere() {
           style={{ background: GRADIENTS[v] }}
         />
       ))}
-      {/* 有机曲线 */}
+      {/* 简约蓝色曲线装饰 */}
       <svg
         className="absolute inset-0 h-full w-full"
         viewBox="0 0 400 800"
@@ -41,48 +40,33 @@ export default function PageAtmosphere() {
         fill="none"
       >
         <path
-          d="M 356 25 C 256 50, 100 112, 56 238 C 11 362, 178 450, 267 538 C 344 612, 289 725, 200 800"
-          stroke="#FFFFFF"
-          strokeWidth="2"
-          strokeLinecap="round"
-          opacity="0.5"
-        />
-        <path
-          d="M 410 175 C 300 200, 200 275, 244 362 C 289 450, 422 425, 410 525"
-          stroke="#E8674A"
+          d="M 380 30 C 280 60, 120 120, 60 240 C 10 360, 180 460, 280 540 C 360 610, 300 730, 200 800"
+          stroke="#5C8AF0"
           strokeWidth="1.5"
           strokeLinecap="round"
-          opacity="0.14"
-        />
-        {/* variant 点缀曲线 */}
-        <path
-          d="M -20 120 C 90 140, 300 190, 344 300 C 388 420, 220 530, 130 600"
-          stroke="#7EA3ED"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          className={`transition-opacity duration-500 ${variant === 'cool' ? 'opacity-[0.18]' : 'opacity-0'}`}
+          opacity="0.10"
         />
         <path
-          d="M 44 100 C 144 33, 267 133, 356 67 C 400 40, 410 100, 378 156"
-          stroke="#E8674A"
-          strokeWidth="1.4"
+          d="M -10 160 C 100 190, 260 260, 280 380 C 300 500, 430 480, 420 560"
+          stroke="#5C8AF0"
+          strokeWidth="1"
           strokeLinecap="round"
-          className={`transition-opacity duration-500 ${variant === 'warm' ? 'opacity-[0.16]' : 'opacity-0'}`}
+          className={`transition-opacity duration-500 ${variant === 'blue' ? 'opacity-[0.14]' : 'opacity-0'}`}
         />
       </svg>
-      {/* 漂浮星星 */}
+      {/* 漂浮星星 - 蓝色系 */}
       <div className="absolute left-5 top-16 animate-float">
         <PlayfulStar size={14} rotation={-14} />
       </div>
       <div className="absolute right-6 top-40 animate-float opacity-70" style={{ animationDelay: '1.2s' }}>
-        <PlayfulStar size={10} rotation={22} />
+        <PlayfulStar size={10} rotation={22} color="#0F44A7" />
       </div>
       <div
         className={`absolute bottom-32 left-8 animate-float transition-opacity duration-500 ${
-          variant === 'warm' ? 'opacity-100' : 'opacity-0'
+          variant === 'cream' ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <PlayfulStar size={12} rotation={-18} />
+        <PlayfulStar size={12} rotation={-18} color="#FFB974" />
       </div>
     </div>
   );

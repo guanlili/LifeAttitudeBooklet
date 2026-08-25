@@ -17,29 +17,40 @@ export default function BookletEntry() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [entry, setEntry] = useState<Entry | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!id) return;
     api
       .get<{ entry: Entry }>(`/booklet/entry/${id}`)
       .then((res) => setEntry(res.entry))
-      .catch((e) => toast(e instanceof Error ? e.message : '加载失败'));
+      .catch((e) => toast(e instanceof Error ? e.message : '加载失败'))
+      .finally(() => setLoading(false));
   }, [id]);
 
   const meta = entry ? dimensionMeta(entry.dimension) : null;
 
   return (
     <div className="min-h-dvh pb-10">
-      <header className="sticky top-0 z-20 flex items-center gap-2 bg-paper/95 px-3 py-3 backdrop-blur">
+      <header className="sticky top-0 z-20 flex items-center gap-2 bg-cream/95 px-3 py-3 backdrop-blur">
         <button
-          className="flex h-11 w-11 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-paper-deep"
+          className="flex h-11 w-11 items-center justify-center rounded-full text-ink-3 transition-colors hover:bg-white"
           onClick={() => navigate(-1)}
           aria-label="返回"
         >
           <ChevronLeft size={22} strokeWidth={2.2} />
         </button>
-        {entry && meta && (
-          <span className="text-sm text-ink-soft">
+      {loading && (
+        <div className="flex flex-col items-center gap-3 py-24">
+          <div className="h-1.5 w-16 overflow-hidden rounded-full bg-border-soft">
+            <div className="h-full w-1/3 animate-[fade-in_1s_ease-in-out_infinite] bg-blue rounded-full" />
+          </div>
+          <p className="text-xs text-ink-4">加载中…</p>
+        </div>
+      )}
+
+      {entry && meta && (
+          <span className="text-sm text-ink-4">
             {meta.emoji} {meta.name}
           </span>
         )}
@@ -47,16 +58,15 @@ export default function BookletEntry() {
 
       {entry && meta && (
         <article className="animate-rise-in px-6 pt-4">
-          {/* 纸页质感排版 */}
-          <div className="paper-card overflow-hidden">
+          <div className="card overflow-hidden">
             <div className={`h-1.5 w-full ${meta.barClass}`} />
             <div className="px-6 py-8">
-              <h1 className="font-serif text-2xl font-bold leading-snug">{entry.title}</h1>
-              <p className="mt-2 text-xs text-ink-soft">
+              <h1 className="text-2xl font-bold leading-snug text-ink">{entry.title}</h1>
+              <p className="mt-2 text-xs text-ink-4">
                 {formatDate(entry.createdAt)} · 深度 Lv.{entry.depthLevel}
               </p>
 
-              <div className="mt-6 space-y-4 text-[15px] leading-loose text-ink">
+              <div className="mt-6 space-y-4 text-[15px] leading-loose text-ink-2">
                 {entry.story
                   .split(/\n+/)
                   .filter(Boolean)
@@ -68,7 +78,7 @@ export default function BookletEntry() {
               </div>
 
               {/* attitude 大字引用块 */}
-              <blockquote className="mt-8 border-l-4 border-coral bg-coral/5 px-5 py-4 font-serif text-lg font-medium italic leading-relaxed">
+              <blockquote className="mt-8 border-l-4 border-blue bg-blue/5 px-5 py-4 text-lg font-semibold leading-relaxed text-blue-deep">
                 {entry.attitude}
               </blockquote>
 
@@ -77,7 +87,7 @@ export default function BookletEntry() {
                 {entry.tags.map((t) => (
                   <span
                     key={t}
-                    className="rounded-full bg-paper-deep px-2.5 py-0.5 text-xs text-ink-soft"
+                    className="tag bg-gray-blue font-semibold text-ink-3"
                   >
                     # {t}
                   </span>

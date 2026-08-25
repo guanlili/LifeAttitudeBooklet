@@ -5,8 +5,8 @@ export default function TypingDots() {
       {[0, 1, 2].map((i) => (
         <span
           key={i}
-          className="h-1.5 w-1.5 rounded-full bg-ink-soft animate-dot-bounce"
-          style={{ animationDelay: `${i * 0.15}s` }}
+          className="h-1.5 w-1.5 rounded-full bg-ink-3 animate-dot-bounce"
+          style={{ animationDelay: `${i * 0.16}s` }}
         />
       ))}
     </span>

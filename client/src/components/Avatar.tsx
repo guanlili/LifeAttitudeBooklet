@@ -14,8 +14,8 @@ const SIZE = {
 export default function Avatar({ emoji, color, size = 'md', className = '' }: AvatarProps) {
   return (
     <span
-      className={`inline-flex shrink-0 items-center justify-center rounded-full border border-ink/10 shadow-page ${SIZE[size]} ${className}`}
-      style={{ backgroundColor: color || '#F2EBE0' }}
+      className={`inline-flex shrink-0 items-center justify-center rounded-full border-2 border-white shadow-avatar ${SIZE[size]} ${className}`}
+      style={{ backgroundColor: color || '#D6DFEE' }}
       aria-hidden
     >
       {emoji || '🙂'}

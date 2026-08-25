@@ -31,7 +31,11 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       body && typeof body === 'object' && typeof (body as { error?: unknown }).error === 'string'
         ? (body as { error: string }).error
         : `请求失败（${res.status}）`;
-    throw new ApiError(msg, res.status);
+    const err = new ApiError(msg, res.status);
+    if (typeof CustomEvent !== 'undefined') {
+      window.dispatchEvent(new CustomEvent<ApiError>('apierror', { detail: err }));
+    }
+    throw err;
   }
   return body as T;
 }

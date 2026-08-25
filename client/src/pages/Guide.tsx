@@ -44,7 +44,6 @@ export default function Guide() {
     startedRef.current = true;
     (async () => {
       try {
-        // 先尝试恢复未完成会话
         const active = await api.get<GuideActiveRes>('/guide/active');
         if (active.session) {
           setSession(active.session);
@@ -111,24 +110,24 @@ export default function Guide() {
   return (
     <div className="flex min-h-dvh flex-col">
       {/* 顶栏：返回 + 当前维度 */}
-      <header className="sticky top-0 z-20 flex items-center gap-2 border-b border-ink/10 bg-paper/95 px-3 py-3 backdrop-blur">
+      <header className="sticky top-0 z-20 flex items-center gap-2 border-b border-border-light bg-cream/95 px-3 py-3 backdrop-blur">
         <button
-          className="flex h-11 w-11 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-paper-deep"
+          className="flex h-11 w-11 items-center justify-center rounded-full text-ink-3 transition-colors hover:bg-white"
           onClick={() => navigate(-1)}
           aria-label="返回"
         >
           <ChevronLeft size={22} strokeWidth={2.2} />
         </button>
         <div className="flex-1">
-          <h1 className="font-serif text-base font-semibold">
+          <h1 className="text-base font-semibold text-ink">
             {meta ? `${meta.emoji} ${meta.name}` : '态度引导'}
           </h1>
-          <p className="text-xs text-ink-soft">慢慢说，真实比精彩更重要</p>
+          <p className="text-xs text-ink-4">慢慢说，真实比精彩更重要</p>
         </div>
       </header>
 
       {/* 消息流 */}
-      <main className="flex-1 space-y-3 px-4 py-4">
+      <main className="flex-1 space-y-3 px-4 py-4 scroll-y">
         {loading && (
           <div className="flex justify-start">
             <div className="bubble-other px-3.5 py-3">
@@ -156,7 +155,7 @@ export default function Guide() {
       </main>
 
       {/* 输入区 */}
-      <footer className="sticky bottom-0 border-t border-ink/10 bg-paper/95 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <footer className="sticky bottom-0 border-t border-border-light bg-cream/95 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur">
         {done ? (
           <div className="flex gap-2">
             <Link to="/booklet" className="btn-primary flex-1 text-sm">
@@ -201,14 +200,14 @@ function EntryCard({ entry, onRechat }: { entry: Entry; onRechat: (d?: string) =
   const meta = dimensionMeta(entry.dimension);
   const [picking, setPicking] = useState(false);
   return (
-    <div className="paper-card animate-rise-in overflow-hidden">
+    <div className="card animate-rise-in overflow-hidden">
       <div className={`h-1 w-full ${meta.barClass}`} />
       <div className="p-4">
-        <p className="text-xs text-ink-soft">
+        <p className="text-xs text-ink-4">
           ✦ 已为你生成一页册子 · {meta.emoji} {meta.name}
         </p>
-        <h3 className="mt-2 font-serif text-lg font-semibold leading-snug">{entry.title}</h3>
-        <blockquote className="mt-2 border-l-2 border-coral/50 pl-3 font-serif text-[15px] italic leading-relaxed">
+        <h3 className="mt-2 text-lg font-semibold leading-snug">{entry.title}</h3>
+        <blockquote className="mt-2 border-l-2 border-blue/50 pl-3 text-[15px] font-semibold leading-relaxed text-ink">
           {entry.attitude}
         </blockquote>
         <div className="mt-3">
@@ -227,7 +226,7 @@ function EntryCard({ entry, onRechat }: { entry: Entry; onRechat: (d?: string) =
             {DIMENSIONS.map((d) => (
               <button
                 key={d.key}
-                className={`rounded-full border px-3 py-2 text-xs font-medium transition-transform active:scale-95 ${d.chipClass}`}
+                className={`tag font-semibold transition-transform active:scale-95 ${d.chipClass}`}
                 onClick={() => onRechat(d.key)}
               >
                 {d.emoji} {d.name}

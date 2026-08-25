@@ -52,20 +52,19 @@ export default function Login() {
 
   return (
     <div className="relative mx-auto flex min-h-dvh max-w-md flex-col justify-center overflow-hidden px-6 py-10">
-      {/* 页面星星点缀 */}
       <div className="absolute left-8 top-20">
         <PlayfulStar size={16} rotation={-12} />
       </div>
       <div className="absolute bottom-24 right-10 opacity-80">
-        <PlayfulStar size={11} rotation={20} />
+        <PlayfulStar size={11} rotation={20} color="#0F44A7" />
       </div>
 
       <header className="relative z-10 animate-rise-in text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-ink/10 bg-white/70 font-serif text-3xl text-coral shadow-page">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-card bg-white text-3xl font-bold text-blue shadow-card">
           冊
         </div>
-        <h1 className="mt-6 font-serif text-3xl font-bold tracking-wide">人生 Attitude 册子</h1>
-        <p className="mt-3 text-[15px] tracking-widest text-ink-soft">先聊态度，再谈遇见</p>
+        <h1 className="mt-6 text-3xl font-bold tracking-wide text-blue-deep">人生 Attitude 册子</h1>
+        <p className="mt-3 text-[15px] tracking-widest text-ink-4">先聊态度，再谈遇见</p>
       </header>
 
       <div className="relative z-10 mt-12 animate-rise-in space-y-3" style={{ animationDelay: '0.1s' }}>
@@ -110,13 +109,13 @@ export default function Login() {
       </div>
 
       <div className="relative z-10 mt-8 animate-rise-in text-center" style={{ animationDelay: '0.2s' }}>
-        <div className="mb-4 flex items-center gap-3 text-xs text-ink-soft/70">
-          <span className="h-px flex-1 bg-ink/10" />
+        <div className="mb-4 flex items-center gap-3 text-xs text-ink-5">
+          <span className="h-px flex-1 bg-border-soft" />
           或者
-          <span className="h-px flex-1 bg-ink/10" />
+          <span className="h-px flex-1 bg-border-soft" />
         </div>
         <button
-          className="btn-ghost w-full border-coral/40 text-coral-deep hover:bg-coral/5"
+          className="btn-ghost w-full border-blue/40 text-blue-deep hover:bg-blue/5"
           onClick={handleDemo}
           disabled={busy !== null}
         >

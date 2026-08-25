@@ -20,3 +20,6 @@ npm-debug.log*
 .DS_Store
 .idea/
 .vscode/
+
+# misc demos (not part of this repo)
+kahoot-demo/

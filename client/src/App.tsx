@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import TabBar from './components/TabBar';
 import PageAtmosphere from './components/decor/PageAtmosphere';
-import { useSession, useToasts } from './store/session';
+import { ApiError } from './api/client';
+import { setStoredUser, useSession, useToasts } from './store/session';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Guide from './pages/Guide';
@@ -13,6 +15,34 @@ import MatchProfile from './pages/MatchProfile';
 import Chat from './pages/Chat';
 import Messages from './pages/Messages';
 import Reconnect from './pages/Reconnect';
+import Shake from './pages/Shake';
+import Publish from './pages/Publish';
+import Prechat from './pages/Prechat';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [pathname]);
+  return null;
+}
+
+function AuthErrorCatcher() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const handler = (event: CustomEvent<ApiError>) => {
+      if (event.detail && event.detail.status === 401) {
+        setStoredUser(null);
+        navigate('/login', { replace: true });
+      }
+    };
+    window.addEventListener('apierror', handler as EventListener);
+    return () => window.removeEventListener('apierror', handler as EventListener);
+  }, [navigate]);
+  return null;
+}
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { user } = useSession();
@@ -26,7 +56,7 @@ function RequireAuth({ children }: { children: ReactNode }) {
 /** 带底部 TabBar 的布局（首页/发现/消息/册子） */
 function TabLayout() {
   return (
-    <div className="mx-auto min-h-dvh max-w-md pb-20">
+    <div className="mx-auto min-h-dvh max-w-md" style={{ paddingBottom: '62px' }}>
       <Outlet />
       <TabBar />
     </div>
@@ -50,7 +80,7 @@ function ToastHost() {
       {toasts.map((t) => (
         <div
           key={t.id}
-          className="animate-rise-in rounded-xl bg-ink/90 px-4 py-2.5 text-sm text-paper shadow-lift"
+          className="animate-rise-in rounded-btn bg-ink/90 px-4 py-2.5 text-sm text-cream shadow-card"
         >
           {t.text}
         </div>
@@ -63,6 +93,8 @@ export default function App() {
   return (
     <>
       <PageAtmosphere />
+      <ScrollToTop />
+      <AuthErrorCatcher />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route
@@ -85,6 +117,9 @@ export default function App() {
           }
         >
           <Route path="/guide" element={<Guide />} />
+          <Route path="/shake" element={<Shake />} />
+          <Route path="/publish" element={<Publish />} />
+          <Route path="/prechat/:userId" element={<Prechat />} />
           <Route path="/booklet/:id" element={<BookletEntry />} />
           <Route path="/profile/:userId" element={<MatchProfile />} />
           <Route path="/chat/:matchId" element={<Chat />} />

@@ -7,15 +7,14 @@ interface ChatBubbleProps {
   children: ReactNode;
 }
 
-/** 聊天气泡：自己珊瑚橘、对方淡青；破冰/重连消息带徽标 */
 export default function ChatBubble({ self, msgType = 'text', children }: ChatBubbleProps) {
   const badge =
     msgType === 'icebreaker' ? (
-      <span className="mb-1 inline-flex w-fit items-center gap-1 rounded-full bg-teal/15 px-2 py-0.5 text-[11px] font-medium text-teal-deep">
+      <span className="mb-1 inline-flex w-fit items-center gap-1 tag bg-tag-blue text-ink-3 font-bold">
         💬 破冰话题
       </span>
     ) : msgType === 'reconnect' ? (
-      <span className="mb-1 inline-flex w-fit items-center gap-1 rounded-full bg-coral/15 px-2 py-0.5 text-[11px] font-medium text-coral-deep">
+      <span className="mb-1 inline-flex w-fit items-center gap-1 tag bg-tag-pink text-ink-3 font-bold">
         🔥 重新连接
       </span>
     ) : null;
@@ -27,7 +26,7 @@ export default function ChatBubble({ self, msgType = 'text', children }: ChatBub
           self
             ? 'bubble-self'
             : msgType === 'reconnect'
-              ? 'rounded-2xl rounded-bl-md border border-coral/25 bg-coral/10 text-ink shadow-page'
+              ? 'rounded-2xl rounded-bl-md bg-tag-pink text-ink shadow-card'
               : 'bubble-other'
         }`}
       >

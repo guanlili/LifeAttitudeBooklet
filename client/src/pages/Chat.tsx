@@ -6,6 +6,7 @@ import type { ChatRes, Icebreaker, Message, MsgType, SendMessageRes, User } from
 import Avatar from '../components/Avatar';
 import ChatBubble from '../components/ChatBubble';
 import TopicCard from '../components/TopicCard';
+import TypingDots from '../components/TypingDots';
 import { toast, useSession } from '../store/session';
 
 export default function Chat() {
@@ -20,6 +21,7 @@ export default function Chat() {
   const [msgType, setMsgType] = useState<MsgType>('text');
   const [sending, setSending] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -30,7 +32,8 @@ export default function Chat() {
         setOther(res.otherUser);
         setMessages(res.messages);
       })
-      .catch((e) => toast(e instanceof Error ? e.message : '加载失败'));
+      .catch((e) => toast(e instanceof Error ? e.message : '加载失败'))
+      .finally(() => setLoading(false));
     api
       .get<{ topics: Icebreaker[] }>(`/chat/${matchId}/icebreakers`)
       .then((res) => setTopics(res.topics))
@@ -63,7 +66,6 @@ export default function Chat() {
     }
   };
 
-  /** 点击话题卡：调 use 接口并填入输入框，由用户手动发送 */
   const pickTopic = async (topic: Icebreaker) => {
     setInput(topic.topic);
     setMsgType('icebreaker');
@@ -91,22 +93,29 @@ export default function Chat() {
   return (
     <div className="flex min-h-dvh flex-col">
       {/* 顶栏 */}
-      <header className="sticky top-0 z-20 flex items-center gap-2 border-b border-ink/10 bg-paper/95 px-3 py-2.5 backdrop-blur shadow-[0_2px_8px_rgba(43,38,34,0.04)]">
+      <header className="sticky top-0 z-20 flex items-center gap-2 border-b border-border-light bg-cream/95 px-3 py-2.5 backdrop-blur shadow-[0_2px_8px_rgba(40,70,140,0.06)]">
         <button
-          className="flex h-11 w-11 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-paper-deep"
+          className="flex h-11 w-11 items-center justify-center rounded-full text-ink-3 transition-colors hover:bg-white"
           onClick={() => navigate(-1)}
           aria-label="返回"
         >
           <ChevronLeft size={22} strokeWidth={2.2} />
         </button>
         {other && <Avatar emoji={other.avatarEmoji} color={other.avatarColor} size="sm" />}
-        <h1 className="flex-1 truncate font-serif text-base font-semibold">
+        <h1 className="flex-1 truncate text-base font-semibold text-ink">
           {other?.nickname ?? ''}
         </h1>
       </header>
 
       {/* 消息流 */}
-      <main className="flex-1 space-y-3 px-4 py-4">
+      <main className="flex-1 space-y-3 px-4 py-4 scroll-y">
+        {loading && (
+          <div className="flex justify-start">
+            <div className="bubble-other px-3.5 py-3">
+              <TypingDots />
+            </div>
+          </div>
+        )}
         {messages.map((m) => (
           <ChatBubble key={m.id} self={m.senderId === user?.id} msgType={m.msgType}>
             {m.content}
@@ -116,10 +125,10 @@ export default function Chat() {
       </main>
 
       {/* 底部：话题抽屉 + 输入框 */}
-      <footer className="sticky bottom-0 border-t border-ink/10 bg-paper/95 backdrop-blur shadow-[0_-2px_8px_rgba(43,38,34,0.04)]">
+      <footer className="sticky bottom-0 border-t border-border-light bg-cream/95 backdrop-blur shadow-[0_-2px_8px_rgba(40,70,140,0.06)]">
         <div className="px-4 pt-2">
           <button
-            className="flex min-h-[44px] items-center gap-1.5 text-sm font-medium text-teal-deep"
+            className="flex min-h-[44px] items-center gap-1.5 text-sm font-semibold text-blue-deep"
             onClick={() => setDrawerOpen((v) => !v)}
           >
             💬 聊点有态度的
@@ -131,15 +140,15 @@ export default function Chat() {
           </button>
           {drawerOpen && (
             <div className="animate-fade-in pb-1">
-              <div className="flex snap-x gap-2 overflow-x-auto pb-2 [-webkit-overflow-scrolling:touch]">
+              <div className="flex snap-x gap-2 overflow-x-auto pb-2 scroll-x">
                 {topics.map((t) => (
                   <TopicCard key={t.id} topic={t} onPick={() => pickTopic(t)} />
                 ))}
                 {topics.length === 0 && (
-                  <p className="py-3 text-xs text-ink-soft">暂无话题，点右侧换一批试试</p>
+                  <p className="py-3 text-xs text-ink-4">暂无话题，点右侧换一批试试</p>
                 )}
                 <button
-                  className="w-24 shrink-0 rounded-xl border border-dashed border-ink/20 text-sm text-ink-soft transition-colors hover:bg-paper-deep"
+                  className="w-24 shrink-0 rounded-card-sm border border-dashed border-gray-blue text-sm text-ink-4 transition-colors hover:bg-gray-blue/30"
                   onClick={refreshTopics}
                   disabled={refreshing}
                 >
